@@ -5,7 +5,7 @@ import { validateTopicPrompt } from '@/ai/flows/validate-topic';
 import { generateCourseTitlePrompt } from '@/ai/flows/generate-course-title';
 import { generateCourseOutlinePrompt } from '@/ai/flows/generate-course-outline';
 import { generateStepContentPrompt } from '@/ai/flows/generate-step-content';
-import type { CourseData, Step } from '@/lib/types';
+import type { CourseData, Step, User } from '@/lib/types';
 import { ai } from '@/ai/genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
@@ -77,13 +77,13 @@ export async function prepareCourseForSaving(data: {
     courseMode === 'Collaborative'
       ? []
       : course.map((step: any, index: number) => ({
-          stepNumber: index + 1,
-          title: step.title,
-          shortTitle: step.shortTitle,
-          description: step.description,
-          subSteps: step.subSteps,
-          completed: false,
-        }));
+        stepNumber: index + 1,
+        title: step.title,
+        shortTitle: step.shortTitle,
+        description: step.description,
+        subSteps: step.subSteps,
+        completed: false,
+      }));
 
   return {
     topic: title,
@@ -94,12 +94,12 @@ export async function prepareCourseForSaving(data: {
       courseMode === 'Collaborative'
         ? undefined
         : JSON.stringify(
-            course.map((s: any) => ({
-              step: s.step,
-              title: s.title,
-              description: s.description,
-            })),
-          ),
+          course.map((s: any) => ({
+            step: s.step,
+            title: s.title,
+            description: s.description,
+          })),
+        ),
     steps,
     notes: '',
     createdAt: new Date().toISOString(),

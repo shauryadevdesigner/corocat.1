@@ -216,9 +216,10 @@ export default function ProfilePage() {
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
 
-      let photoUploadCount = snap.data()?.photoUploadCount || 0;
-      let lastPhotoUpload = snap.data()?.lastPhotoUpload
-        ? new Date(snap.data().lastPhotoUpload)
+      const userData = snap.data();
+      let photoUploadCount = userData?.photoUploadCount || 0;
+      let lastPhotoUpload = userData?.lastPhotoUpload
+        ? new Date(userData.lastPhotoUpload)
         : null;
 
       const now = new Date();
@@ -423,6 +424,7 @@ export default function ProfilePage() {
       onCreateNew={() => router.push('/learn')}
       onDeleteCourse={() => { }}
       onLogout={logout}
+      onCourseAdded={async () => { await fetchSidebarCourses(); }}
     />
   );
 
@@ -589,7 +591,7 @@ export default function ProfilePage() {
                     {sidebarCourses.map(course => (
                       <Card key={course.id} className={`cursor-pointer transition-all ${selectedCourses.includes(course.topic) ? 'border-primary shadow-lg' : 'border-border'}`} onClick={() => handleCourseSelection(course.topic)}>
                         <CardHeader><CardTitle className="text-lg">{course.topic}</CardTitle></CardHeader>
-                        <CardContent>{(course.steps || [])[0]?.content && <p className="text-sm text-muted-foreground line-clamp-3">{(course.steps || [])[0].content.substring(0, 100)}</p>}</CardContent>
+                        <CardContent>{(course.steps || [])[0]?.content && <p className="text-sm text-muted-foreground line-clamp-3">{(course.steps || [])[0]?.content?.substring(0, 100)}</p>}</CardContent>
                       </Card>
                     ))}
                   </div>

@@ -53,32 +53,32 @@ export function CourseUploadDialog({ userCourses, onUpload }: CourseUploadDialog
             Select one of your existing courses to share with the community. Our AI will automatically categorize it.
           </DialogDescription>
         </DialogHeader>
-        
+
         <ScrollArea className="h-64 border rounded-md p-2">
-            <div className="space-y-2">
+          <div className="space-y-2">
             {userCourses.length > 0 ? userCourses.map(course => (
-                <button
-                    key={course.id}
-                    onClick={() => setSelectedCourse(course)}
-                    className={cn(
-                        "w-full text-left p-3 rounded-md transition-colors",
-                        "hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed",
-                        selectedCourse?.id === course.id && "bg-muted ring-2 ring-primary"
-                    )}
-                    disabled={course.isPublic}
-                >
-                    <p className="font-medium">{course.topic}</p>
-                    <p className="text-sm text-muted-foreground">
-                        {course.steps.length} steps
-                        {course.isPublic && " (Already in marketplace)"}
-                    </p>
-                </button>
+              <button
+                key={course.id}
+                onClick={() => setSelectedCourse(course)}
+                className={cn(
+                  "w-full text-left p-3 rounded-md transition-colors",
+                  "hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed",
+                  selectedCourse?.id === course.id && "bg-muted ring-2 ring-primary"
+                )}
+                disabled={course.isPublic}
+              >
+                <p className="font-medium">{course.topic}</p>
+                <p className="text-sm text-muted-foreground">
+                  {(course.steps || []).length} steps
+                  {course.isPublic && " (Already in marketplace)"}
+                </p>
+              </button>
             )) : (
-                <div className="text-center text-muted-foreground p-8">
-                    You haven't created any courses yet. Go to the "Learn" tab to create your first course!
-                </div>
+              <div className="text-center text-muted-foreground p-8">
+                You haven't created any courses yet. Go to the "Learn" tab to create your first course!
+              </div>
             )}
-            </div>
+          </div>
         </ScrollArea>
 
         <DialogFooter>

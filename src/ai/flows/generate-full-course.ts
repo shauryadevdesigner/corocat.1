@@ -27,6 +27,8 @@ import {
 } from './validate-topic';
 import { GenerateFullCourseOutput, GenerateFullCourseOutputSchema } from './schemas';
 import { GenerateCourseOutlineInput } from './generate-course-outline';
+export type { GenerateFullCourseOutput };
+export type GenerateFullCourseInput = GenerateCourseOutlineInput;
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const model = googleAI.model('gemini-2.5-flash');
@@ -89,7 +91,7 @@ const generateStepContentFlow = ai.defineFlow(
   async (input) => {
     const { output } = await generateStepContentPrompt(input, { model });
     if (!output || !output.subSteps || output.subSteps.length === 0 || !output.externalLinks || output.externalLinks.length < 2) {
-        throw new Error(`AI failed to generate complete content for step: ${input.stepTitle}`);
+      throw new Error(`AI failed to generate complete content for step: ${input.stepTitle}`);
     }
     return output;
   }
@@ -123,7 +125,7 @@ const generateFullCourseFlow = ai.defineFlow(
     const outlineString = JSON.stringify(outlineResponse);
 
     // 5. Create promises for generating each step's content sequentially
-    const resolvedContent = [];
+    const resolvedContent: any[] = [];
     for (const step of outline) {
       await sleep(30000);
       const content = await generateStepContentFlow({
@@ -144,7 +146,7 @@ const generateFullCourseFlow = ai.defineFlow(
     const completeCourse = course.filter(step => step.subSteps && step.subSteps.length > 0);
 
     if (completeCourse.length === 0) {
-        throw new Error('AI failed to generate content for any of the course steps. Please try again.');
+      throw new Error('AI failed to generate content for any of the course steps. Please try again.');
     }
 
     return { title, course: completeCourse };
