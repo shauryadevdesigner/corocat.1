@@ -26,14 +26,14 @@ interface CourseDisplayProps {
   onShareCourse: (course: Course) => void;
 }
 
-export default function CourseDisplay({ 
-  course, 
-  chatHistory, 
-  setChatHistory, 
-  onUpdateStep, 
-  onAskQuestion, 
-  onUpdateNotes, 
-  onAssistWithNotes, 
+export default function CourseDisplay({
+  course,
+  chatHistory,
+  setChatHistory,
+  onUpdateStep,
+  onAskQuestion,
+  onUpdateNotes,
+  onAssistWithNotes,
   onGenerateQuiz,
   onQuizRestart,
   onCourseComplete,
@@ -44,13 +44,13 @@ export default function CourseDisplay({
   const isCollaborative = course.courseMode === "Collaborative";
   const router = useRouter();
   const completedSteps = useMemo(
-    () => course.steps.filter(step => step.completed).length,
+    () => (course.steps || []).filter(step => step.completed).length,
     [course.steps]
   );
 
   const progressPercentage =
-    course.steps.length > 0
-      ? (completedSteps / course.steps.length) * 100
+    (course.steps || []).length > 0
+      ? (completedSteps / (course.steps || []).length) * 100
       : 0;
 
   const handleStepSelect = (step: Step) => {
@@ -86,7 +86,7 @@ export default function CourseDisplay({
             <div className="flex items-center gap-4">
               <Progress value={progressPercentage} className="w-full h-3" />
               <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-                {completedSteps} / {course.steps.length} steps
+                {completedSteps} / {(course.steps || []).length} steps
               </span>
             </div>
           )}
@@ -95,15 +95,15 @@ export default function CourseDisplay({
         {/* COLLABORATIVE MODE */}
         {isCollaborative ? (
           <div className="flex-1 flex items-center justify-center">
-            <Button size="lg" className="flex items-center gap-2" onClick={()=>router.push(`/whiteboard/${course.id}`)}>
+            <Button size="lg" className="flex items-center gap-2" onClick={() => router.push(`/whiteboard/${course.id}`)}>
               <Users className="h-5 w-5" />
               Realtime Whiteboard
             </Button>
           </div>
         ) : (
           /* SOLO MODE */
-          <StepList 
-            steps={course.steps}
+          <StepList
+            steps={course.steps || []}
             onStepSelect={handleStepSelect}
             onUpdateStep={(stepNumber, data) =>
               onUpdateStep(course.id, stepNumber, data)

@@ -33,18 +33,15 @@ export function NotificationBell({ onCourseAccepted }: NotificationBellProps) {
         if (!user || !notification.relatedEntityId) return;
         setIsActing(notification.id);
         try {
-            const newCourseId = await acceptSharedCourse(
-                user.uid,
-                notification.id,
-                notification.relatedEntityId
-            );
+            const result = await acceptSharedCourse(notification.id);
+            if (!result.success) throw new Error(result.message);
 
             toast({
                 title: "Course Added!",
                 description: `'${notification.relatedEntityName}' has been added to your courses.`,
             });
 
-            await onCourseAccepted(newCourseId);
+            await onCourseAccepted("");
             setIsOpen(false);
 
         } catch (error: any) {
@@ -90,7 +87,7 @@ export function NotificationBell({ onCourseAccepted }: NotificationBellProps) {
             : name[0].toUpperCase();
     };
 
-    const unreadCount = notifications.filter(n => !n.isRead).length;
+    const unreadCount = notifications.filter(n => !n.read).length;
 
     return (
         <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -136,7 +133,7 @@ export function NotificationBell({ onCourseAccepted }: NotificationBellProps) {
                                 <div className="flex items-start space-x-3">
                                     <Avatar className="h-8 w-8 mt-1">
                                         <AvatarImage
-                                            src={n.fromUserAvatar}
+                                            src={n.fromUserAvatar || undefined}
                                             alt={n.fromUserName}
                                         />
                                         <AvatarFallback>
@@ -155,9 +152,9 @@ export function NotificationBell({ onCourseAccepted }: NotificationBellProps) {
 
                                             {n.type === 'friend_request_accepted' &&
                                                 ' accepted your friend request.'}
-                                             {n.type === 'friend_request_rejected' &&
+                                            {n.type === 'friend_request_rejected' &&
                                                 ' rejected your friend request.'}
-                                             {n.type === 'friend_removed' &&
+                                            {n.type === 'friend_removed' &&
                                                 ' removed you from friends.'}
 
                                             {n.type === 'course_shared' &&
@@ -218,7 +215,7 @@ export function NotificationBell({ onCourseAccepted }: NotificationBellProps) {
                                     </div>
                                 )}
 
-                                   {n.type === 'friend_request_rejected' && (
+                                {n.type === 'friend_request_rejected' && (
                                     <div className="mt-2 flex justify-end">
                                         <Button
                                             size="sm"

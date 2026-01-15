@@ -13,6 +13,8 @@ import { Label } from "./ui/label";
 import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "./ui/input";
 import type { AskStepQuestionInput, AskStepQuestionOutput } from "@/ai/flows/ask-step-question";
+import type { AssistWithNotesOutput } from "@/ai/flows/assist-with-notes";
+import type { GenerateStepQuizOutput } from "@/ai/flows/generate-step-quiz";
 import { Separator } from "./ui/separator";
 
 interface AiChatProps {
@@ -66,7 +68,7 @@ function AiChat({ course, step, history, setHistory, onAskQuestion }: AiChatProp
         setIsAsking(true);
 
         try {
-            const stepContentString = step.subSteps?.map(s => `Title: ${s.title}\nContent: ${s.content}`).join('\n---\n') || '';
+            const stepContentString = (step.subSteps || []).map(s => `Title: ${s.title}\nContent: ${s.content}`).join('\n---\n');
 
             const result = await onAskQuestion({
                 topic: course.topic,
@@ -111,8 +113,8 @@ function AiChat({ course, step, history, setHistory, onAskQuestion }: AiChatProp
                             )}
                             <div
                                 className={`max-w-[80%] rounded-lg p-3 text-sm ${message.role === 'user'
-                                        ? 'bg-background'
-                                        : 'bg-muted-foreground/20 text-foreground'
+                                    ? 'bg-background'
+                                    : 'bg-muted-foreground/20 text-foreground'
                                     }`}
                             >
                                 {message.content}
@@ -162,6 +164,10 @@ interface StepWorkspaceProps {
     onClose: () => void;
     onUpdateStep: (data: Partial<Step>) => void;
     onAskQuestion: (input: AskStepQuestionInput) => Promise<AskStepQuestionOutput>;
+    onUpdateNotes?: (notes: string) => void;
+    onAssistWithNotes?: (course: Course, notes: string, request: string) => Promise<AssistWithNotesOutput>;
+    onGenerateQuiz?: (course: Course, step: Step) => Promise<GenerateStepQuizOutput>;
+    onQuizRestart?: () => void;
 }
 
 
@@ -179,7 +185,7 @@ export function StepWorkspace({
     const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
     useEffect(() => {
-        const updatedStep = course.steps.find(s => s.stepNumber === initialStep.stepNumber);
+        const updatedStep = (course.steps || []).find(s => s.stepNumber === initialStep.stepNumber);
         if (updatedStep) {
             setStep(updatedStep);
         }

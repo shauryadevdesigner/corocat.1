@@ -30,12 +30,24 @@ export interface ExternalLink {
 export interface Exercise {
   description: string;
   startingCode?: string;
+  multipleChoice: {
+    question: string;
+    options: string[];
+    correctAnswerIndex: number;
+    explanation?: string;
+  };
+  trueOrFalse: {
+    question: string;
+    correctAnswer: boolean;
+    explanation?: string;
+  };
 }
 
 export interface SubStep {
   title: string;
   content: string;
   exercise: Exercise;
+  summary?: string;
 }
 
 export interface Step {
@@ -49,6 +61,21 @@ export interface Step {
   funFact?: string;
   externalLinks?: ExternalLink[];
   completed: boolean;
+}
+
+export interface Notification {
+  id: string;
+  type: string;
+  message: string;
+  read: boolean;
+  createdAt: any;
+  fromUserId?: string;
+  fromUserName?: string;
+  fromUserAvatar?: string | null;
+  status?: string;
+  data?: any;
+  relatedEntityId?: string;
+  relatedEntityName?: string;
 }
 
 export interface User {

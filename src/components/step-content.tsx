@@ -126,9 +126,9 @@ export function StepContent({ step, onStepComplete }: StepContentProps) {
             </div>
         );
     }
-    
+
     const handleNext = () => {
-        if (activeSubStepIndex !== null && activeSubStepIndex < step.subSteps.length - 1) {
+        if (activeSubStepIndex !== null && activeSubStepIndex < (step.subSteps || []).length - 1) {
             setActiveSubStepIndex(prev => prev! + 1);
         }
     };
@@ -150,20 +150,20 @@ export function StepContent({ step, onStepComplete }: StepContentProps) {
                         <div className="flex-shrink-0 w-6 h-6 rounded-full border-2 border-primary bg-background flex items-center justify-center">
                             <div className="w-3 h-3 rounded-full bg-primary/50" />
                         </div>
-                        {index < step.subSteps.length - 1 && (
+                        {index < (step.subSteps || []).length - 1 && (
                             <div className="w-px flex-grow border-l-2 border-dashed border-border" />
                         )}
                     </div>
 
                     {/* Content Column */}
                     <div className="flex-1 pt-0 pb-10">
-                         <button 
+                        <button
                             onClick={() => setActiveSubStepIndex(index)}
                             className="w-full text-left p-6 rounded-xl border bg-background hover:bg-muted/50 transition-colors flex items-center justify-between gap-4 shadow-sm -mt-1"
                         >
                             <div>
                                 <h3 className="font-semibold text-lg">{subStep.title}</h3>
-                                <p className="text-sm text-muted-foreground mt-1">Section {index + 1} of {step.subSteps.length}</p>
+                                <p className="text-sm text-muted-foreground mt-1">Section {index + 1} of {(step.subSteps || []).length}</p>
                             </div>
                             <BookOpen className="h-5 w-5 text-muted-foreground" />
                         </button>
@@ -185,7 +185,7 @@ export function StepContent({ step, onStepComplete }: StepContentProps) {
                             </Button>
                         </DialogHeader>
                         <div className="flex-1 grid md:grid-cols-2 min-h-0">
-                           <div className="bg-background overflow-y-auto min-w-0 hide-scrollbar">
+                            <div className="bg-background overflow-y-auto min-w-0 hide-scrollbar">
                                 <div className="p-12 md:p-16">
                                     <div
                                         className="prose prose-lg dark:prose-invert max-w-none"
@@ -206,7 +206,7 @@ export function StepContent({ step, onStepComplete }: StepContentProps) {
                             <Button variant="outline" onClick={handlePrevious} disabled={activeSubStepIndex === 0}>
                                 Previous
                             </Button>
-                            {activeSubStepIndex === step.subSteps.length - 1 ? (
+                            {activeSubStepIndex === (step.subSteps || []).length - 1 ? (
                                 <Button onClick={() => setActiveSubStepIndex(null)} size="lg">
                                     Return to Step
                                 </Button>

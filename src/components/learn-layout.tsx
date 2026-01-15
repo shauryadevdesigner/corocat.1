@@ -14,13 +14,13 @@ import { NotificationBell } from "./notification-bell";
 interface LearnLayoutProps {
     sidebar: React.ReactNode;
     mainContent: React.ReactNode;
-    onCourseAccepted: (newCourseId: string) => Promise<void>; // Added prop
+    onCourseAccepted?: (newCourseId: string) => Promise<void>;
 }
 
-export default function LearnLayout({ sidebar, mainContent, onCourseAccepted }: LearnLayoutProps) {
+export default function LearnLayout({ sidebar, mainContent, onCourseAccepted = async () => { } }: LearnLayoutProps) {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const isMobile = useIsMobile();
-    
+
     if (isMobile) {
         return (
             <div className="min-h-screen flex flex-col">

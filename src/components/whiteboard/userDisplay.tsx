@@ -39,7 +39,7 @@ const UserDisplay = () => {
               <TooltipTrigger asChild>
                 <Avatar className="cursor-pointer w-8 h-8">
                   <AvatarImage
-                    src={u.profile}
+                    src={u.photoURL}
                     alt={u.displayName}
                   />
                   <AvatarFallback className="bg-[#F5E6D3] text-black font-medium">
