@@ -169,7 +169,7 @@ export default function TopicSelection({ soloCoursesCount = 0, collaborativeCour
                         <div key={friend.id} className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <Avatar>
-                              <AvatarImage src={friend.photoURL} />
+                              <AvatarImage src={friend.photoURL ?? undefined} />
                               <AvatarFallback>{friend.displayName?.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <span className="text-sm">{friend.displayName}</span>

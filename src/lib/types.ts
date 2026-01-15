@@ -53,9 +53,9 @@ export interface Step {
 
 export interface User {
   uid: string;
-  displayName: string;
-  email: string;
-  photoURL?: string;
+  displayName: string | null;
+  email: string | null;
+  photoURL?: string | null;
 }
 export interface Course {
   id: string;
@@ -73,6 +73,9 @@ export interface Course {
   category?: string;
   likes?: number;
   likedBy?: string[];
+  originalOwnerId?: string;
+  originalOwnerName?: string;
+  sharedAt?: any;
 }
 
 export type CourseData = Omit<Course, 'id'>;

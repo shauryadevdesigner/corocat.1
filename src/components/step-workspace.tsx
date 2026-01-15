@@ -24,9 +24,9 @@ interface AiChatProps {
 }
 
 export interface Message {
-  id: string;
-  role: 'user' | 'bot';
-  content: string;
+    id: string;
+    role: 'user' | 'bot';
+    content: string;
 }
 
 function AiChat({ course, step, history, setHistory, onAskQuestion }: AiChatProps) {
@@ -59,7 +59,7 @@ function AiChat({ course, step, history, setHistory, onAskQuestion }: AiChatProp
             role: 'user',
             content: inputValue,
         };
-        
+
         const newMessages: Message[] = [...history, userMessage];
         setHistory(newMessages);
         setInputValue("");
@@ -70,7 +70,7 @@ function AiChat({ course, step, history, setHistory, onAskQuestion }: AiChatProp
 
             const result = await onAskQuestion({
                 topic: course.topic,
-                courseOutline: course.outline,
+                courseOutline: course.outline || '',
                 stepTitle: step.title,
                 stepContent: stepContentString,
                 question: inputValue,
@@ -95,36 +95,34 @@ function AiChat({ course, step, history, setHistory, onAskQuestion }: AiChatProp
 
     return (
         <div className="h-full flex flex-col bg-muted/50">
-            
+
             <ScrollArea className="flex-1" ref={scrollAreaRef}>
                 <div className="space-y-4 p-4">
                     {history.map((message) => (
-                    <div
-                        key={message.id}
-                        className={`flex items-start gap-3 ${
-                        message.role === 'user' ? 'justify-end' : ''
-                        }`}
-                    >
-                        {message.role === 'bot' && (
-                        <div className="bg-primary rounded-full p-2">
-                            <Bot className="h-5 w-5 text-primary-foreground" />
-                        </div>
-                        )}
                         <div
-                        className={`max-w-[80%] rounded-lg p-3 text-sm ${
-                            message.role === 'user'
-                            ? 'bg-background'
-                            : 'bg-muted-foreground/20 text-foreground'
-                        }`}
+                            key={message.id}
+                            className={`flex items-start gap-3 ${message.role === 'user' ? 'justify-end' : ''
+                                }`}
                         >
-                        {message.content}
+                            {message.role === 'bot' && (
+                                <div className="bg-primary rounded-full p-2">
+                                    <Bot className="h-5 w-5 text-primary-foreground" />
+                                </div>
+                            )}
+                            <div
+                                className={`max-w-[80%] rounded-lg p-3 text-sm ${message.role === 'user'
+                                        ? 'bg-background'
+                                        : 'bg-muted-foreground/20 text-foreground'
+                                    }`}
+                            >
+                                {message.content}
+                            </div>
+                            {message.role === 'user' && (
+                                <div className="bg-accent rounded-full p-2">
+                                    <User className="h-5 w-5 text-accent-foreground" />
+                                </div>
+                            )}
                         </div>
-                        {message.role === 'user' && (
-                        <div className="bg-accent rounded-full p-2">
-                            <User className="h-5 w-5 text-accent-foreground" />
-                        </div>
-                        )}
-                    </div>
                     ))}
                     {isAsking && (
                         <div className="flex items-start gap-3">
@@ -141,14 +139,14 @@ function AiChat({ course, step, history, setHistory, onAskQuestion }: AiChatProp
             <div className="p-4 border-t">
                 <div className="flex items-center gap-2">
                     <Input
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Ask a question..."
-                    disabled={isAsking}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        placeholder="Ask a question..."
+                        disabled={isAsking}
                     />
                     <Button onClick={handleAsk} disabled={!inputValue.trim() || isAsking} size="icon">
-                    <Send className="h-4 w-4" />
+                        <Send className="h-4 w-4" />
                     </Button>
                 </div>
             </div>
@@ -167,16 +165,16 @@ interface StepWorkspaceProps {
 }
 
 
-export function StepWorkspace({ 
-    course, 
-    step: initialStep, 
-    chatHistory, 
-    setChatHistory, 
-    onClose, 
-    onUpdateStep, 
+export function StepWorkspace({
+    course,
+    step: initialStep,
+    chatHistory,
+    setChatHistory,
+    onClose,
+    onUpdateStep,
     onAskQuestion,
 }: StepWorkspaceProps) {
-  
+
     const [step, setStep] = useState(initialStep);
     const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
@@ -186,13 +184,13 @@ export function StepWorkspace({
             setStep(updatedStep);
         }
     }, [course, initialStep.stepNumber]);
-    
+
     const handleCheckedChange = (checked: boolean) => {
         const newStepState = { ...step, completed: checked };
         setStep(newStepState);
         onUpdateStep({ completed: checked });
     };
-    
+
     const handleFinishStep = () => {
         if (!step.completed) {
             handleCheckedChange(true);
@@ -221,7 +219,7 @@ export function StepWorkspace({
                             <X className="h-5 w-5" />
                         </Button>
                     </DialogHeader>
-                    
+
                     <div className="flex-1 min-h-0 relative">
                         <ScrollArea className="h-full">
                             <div className="p-6 md:p-8 space-y-8">
@@ -250,12 +248,12 @@ export function StepWorkspace({
                     <DialogHeader className="p-4 border-b">
                         <DialogTitle className="flex items-center gap-2"><Bot className="h-5 w-5" /> AI Assistant</DialogTitle>
                     </DialogHeader>
-                    <AiChat 
-                        course={course} 
-                        step={step} 
+                    <AiChat
+                        course={course}
+                        step={step}
                         history={chatHistory}
                         setHistory={setChatHistory}
-                        onAskQuestion={onAskQuestion} 
+                        onAskQuestion={onAskQuestion}
                     />
                 </DialogContent>
             </Dialog>

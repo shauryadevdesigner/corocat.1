@@ -74,7 +74,7 @@ export default function LearnPage() {
 
   const handleUpdateStep = async (courseId: string, stepNumber: number, newStepData: Partial<Step>) => {
     const courseToUpdate = courses.find(c => c.id === courseId);
-    if (!courseToUpdate) return;
+    if (!courseToUpdate || !courseToUpdate.steps) return;
 
     const updatedSteps = courseToUpdate.steps.map(step => step.stepNumber === stepNumber ? { ...step, ...newStepData } : step);
     const updatedCourse = { ...courseToUpdate, steps: updatedSteps };
@@ -92,7 +92,7 @@ export default function LearnPage() {
 
   const handleQuizRestart = (courseId: string, stepNumber: number) => {
     const courseToUpdate = courses.find(c => c.id === courseId);
-    if (!courseToUpdate) return;
+    if (!courseToUpdate || !courseToUpdate.steps) return;
 
     const updatedSteps = courseToUpdate.steps.map(step => {
       if (step.stepNumber === stepNumber && step.quiz) {
@@ -110,7 +110,7 @@ export default function LearnPage() {
   const handleGenerateQuiz = async (course: Course, step: Step): Promise<GenerateStepQuizOutput> => {
     try {
       const stepContentString = step.subSteps?.map(s => `### ${s.title}\n${s.content}`).join('\n\n') || '';
-      const result = await generateQuizAction({ topic: course.topic, courseOutline: course.outline, stepTitle: step.title, stepContent: stepContentString });
+      const result = await generateQuizAction({ topic: course.topic, courseOutline: course.outline || '', stepTitle: step.title, stepContent: stepContentString });
       if (result.quiz) {
         const newQuizSet: QuizSet = { questions: result.quiz.map(q => ({ ...q, userAnswer: null, isCorrect: null })), score: null };
         handleUpdateStep(course.id, step.stepNumber, { quiz: newQuizSet });
@@ -140,7 +140,7 @@ export default function LearnPage() {
   const handleAskQuestion = async (input: AskStepQuestionInput): Promise<AskStepQuestionOutput> => {
     try {
       const activeCourseForQuestion = courses.find(c => c.topic === input.topic);
-      const activeStepForQuestion = activeCourseForQuestion?.steps.find(s => s.title === input.stepTitle);
+      const activeStepForQuestion = activeCourseForQuestion?.steps?.find(s => s.title === input.stepTitle);
       const contentString = activeStepForQuestion?.subSteps?.map(s => `### ${s.title}\n${s.content}`).join('\n\n') || '';
       return await askQuestionAction({ ...input, stepContent: contentString });
     } catch (error) {

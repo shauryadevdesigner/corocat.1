@@ -211,9 +211,9 @@ export async function acceptSharedCourse(notificationId: string) {
             originalOwnerId: originalCourse.userId,
             originalOwnerName: fromUserName,
             createdAt: new Date().toISOString(),
-            sharedAt: serverTimestamp() as any, // HACK
+            sharedAt: serverTimestamp(),
             notes: "",
-            steps: originalCourse.steps.map(step => ({ ...step, completed: false, quiz: undefined }))
+            steps: (originalCourse.steps || []).map(step => ({ ...step, completed: false, quiz: undefined }))
         };
 
         const newCourseRef = doc(collection(db, 'courses'));

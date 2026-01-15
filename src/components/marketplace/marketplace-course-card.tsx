@@ -18,7 +18,7 @@ interface MarketplaceCourseCardProps {
 }
 
 export function MarketplaceCourseCard({ course, currentUserId, onLikeToggle, onAddCourse }: MarketplaceCourseCardProps) {
-    
+
     const { toast } = useToast();
     const isLiked = course.likedBy?.includes(currentUserId);
     const [isAdding, setIsAdding] = React.useState(false);
@@ -48,17 +48,17 @@ export function MarketplaceCourseCard({ course, currentUserId, onLikeToggle, onA
             <div className="flex-1 p-6 space-y-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <User className="h-4 w-4" />
-                     <Link href={`/profile/${course.userId}`} className="hover:underline">
+                    <Link href={`/profile/${course.userId}`} className="hover:underline">
                         <span>{course.userName || "Community Creator"}</span>
                     </Link>
                 </div>
                 <h3 className="font-headline text-xl font-bold">{course.topic}</h3>
                 <p className="text-sm text-muted-foreground line-clamp-2">
-                    {JSON.parse(course.outline).map((o: any) => o.description).join(' ')}
+                    {course.outline ? JSON.parse(course.outline).map((o: any) => o.description).join(' ') : 'No outline available.'}
                 </p>
             </div>
             <div className="flex flex-col justify-center items-center gap-2 p-6 bg-muted/50 border-t md:border-t-0 md:border-l w-full md:w-48">
-                 <Button onClick={handleAdd} className="w-full" disabled={isAdding}>
+                <Button onClick={handleAdd} className="w-full" disabled={isAdding}>
                     <Plus className="mr-2 h-4 w-4" />
                     {isAdding ? "Adding..." : "Add"}
                 </Button>
