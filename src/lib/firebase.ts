@@ -1,6 +1,6 @@
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { 
+import {
     getFirestore,
     collection,
     query,
@@ -22,16 +22,20 @@ import { getStorage } from 'firebase/storage';
 import { Course } from './types';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NNEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NNEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const app = getApps().length
+    ? getApp()
+    : (firebaseConfig.apiKey
+        ? initializeApp(firebaseConfig)
+        : initializeApp({ ...firebaseConfig, apiKey: 'dummy-key' })); // dummy key to prevent crash during build
 const auth = getAuth(app);
 const db = getFirestore(app);
 export const storage = getStorage(app)
@@ -49,67 +53,68 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function sendFriendRequest(
-  fromUserId: string,
-  toUserEmail: string,
-  fromUserName: string
+    fromUserId: string,
+    toUserEmail: string,
+    fromUserName: string
 ): Promise<{ success: boolean; message: string }> {
-  try {
-    const toUser = await getUserByEmail(toUserEmail);
-    if(!auth.currentUser){
-        return {success:false,message:"Please Authenticate"}
+    try {
+        const toUser = await getUserByEmail(toUserEmail);
+        if (!auth.currentUser) {
+            return { success: false, message: "Please Authenticate" }
+        }
+        if (!toUser) {
+            console.log("1")
+            return { success: false, message: "User not found." };
+        }
+
+        const toUserId = toUser.id;
+
+        if (fromUserId === toUserId) {
+            console.log("2")
+            return { success: false, message: "Cannot friend yourself." };
+        }
+
+        // Check if friend request already exists
+        const reqQ = query(
+            collection(db, "friendRequests"),
+            where("from", "==", fromUserId),
+            where("to", "==", toUserId)
+        );
+        const exists = await getDocs(reqQ);
+        if (!exists.empty) {
+            console.log("3")
+            return { success: false, message: "Friend request already sent." };
+        }
+
+        // Create friend request
+        await addDoc(collection(db, "friendRequests"), {
+            from: fromUserId,
+            to: toUserId,
+            status: "pending",
+            createdAt: serverTimestamp(),
+        });
+
+        // Create notification for receiver
+        await addDoc(collection(db, "users", toUserId, "notifications"), {
+            type: "FRIEND_REQUEST",
+            fromUserId: fromUserId,
+            fromUserName: fromUserName,
+            toUserId: toUserId,
+            status: "pending",
+            createdAt: serverTimestamp(),
+        });
+        console.log("4")
+        return { success: true, message: "Friend request sent!" };
+    } catch (error: any) {
+        console.error("Error in sendFriendRequest:", error);
+        return { success: false, message: error?.message || "Unknown error" };
     }
-    if (!toUser){
-        console.log("1")
-        return { success: false, message: "User not found." };}
-
-    const toUserId = toUser.id;
-
-    if (fromUserId === toUserId){
-         console.log("2")
-      return { success: false, message: "Cannot friend yourself." };
-    }
-
-    // Check if friend request already exists
-    const reqQ = query(
-      collection(db, "friendRequests"),
-      where("from", "==", fromUserId),
-      where("to", "==", toUserId)
-    );
-    const exists = await getDocs(reqQ);
-    if (!exists.empty){
-         console.log("3")
-      return { success: false, message: "Friend request already sent." };
-    }
-
-    // Create friend request
-    await addDoc(collection(db, "friendRequests"), {
-      from: fromUserId,
-      to: toUserId,
-      status: "pending",
-      createdAt: serverTimestamp(),
-    });
-
-    // Create notification for receiver
-    await addDoc(collection(db, "users", toUserId, "notifications"), {
-      type: "FRIEND_REQUEST",
-      fromUserId: fromUserId,
-      fromUserName: fromUserName,
-      toUserId: toUserId,
-      status: "pending",
-      createdAt: serverTimestamp(),
-    });
- console.log("4")
-    return { success: true, message: "Friend request sent!" };
-  } catch (error: any) {
-    console.error("Error in sendFriendRequest:", error);
-    return { success: false, message: error?.message || "Unknown error" };
-  }
 }
 
 
 export async function acceptFriendRequest(notificationId: string) {
     const notificationRef = doc(notificationsCollection, notificationId);
-    
+
     return runTransaction(db, async (transaction) => {
         const notificationSnap = await transaction.get(notificationRef);
         if (!notificationSnap.exists() || notificationSnap.data().type !== 'FRIEND_REQUEST' || notificationSnap.data().status !== 'pending') {
@@ -187,13 +192,13 @@ export async function acceptSharedCourse(notificationId: string) {
         if (!notifSnap.exists() || notifSnap.data().type !== 'SHARE_COURSE' || notifSnap.data().status !== 'pending') {
             throw new Error("Invalid or already handled share notification.");
         }
-        
+
         const { toUserId, entityId: courseId, fromUserName } = notifSnap.data();
-        
+
         const courseRef = doc(coursesCollection, courseId);
         const courseSnap = await transaction.get(courseRef);
 
-        if(!courseSnap.exists()) {
+        if (!courseSnap.exists()) {
             throw new Error("Shared course not found.");
         }
 
@@ -208,12 +213,12 @@ export async function acceptSharedCourse(notificationId: string) {
             createdAt: new Date().toISOString(),
             sharedAt: serverTimestamp() as any, // HACK
             notes: "",
-            steps: originalCourse.steps.map(step => ({...step, completed: false, quiz: undefined }))
+            steps: originalCourse.steps.map(step => ({ ...step, completed: false, quiz: undefined }))
         };
 
         const newCourseRef = doc(collection(db, 'courses'));
         transaction.set(newCourseRef, newCourseData);
-        
+
         transaction.update(notificationRef, { status: 'accepted' });
 
         return { success: true, message: "Course added to your library!" };

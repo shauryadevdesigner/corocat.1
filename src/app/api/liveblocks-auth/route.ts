@@ -1,7 +1,8 @@
 import { Liveblocks } from "@liveblocks/node";
 
+const secret = process.env.LIVEBLOCKS_SECRET;
 const liveblocks = new Liveblocks({
-  secret: process.env.LIVEBLOCKS_SECRET!,
+  secret: secret && secret.startsWith('sk_') ? secret : 'sk_placeholder',
 });
 
 export async function POST(req: Request) {
