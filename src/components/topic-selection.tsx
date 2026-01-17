@@ -117,7 +117,7 @@ export default function TopicSelection({ soloCoursesCount = 0, collaborativeCour
       /* ---------- COURSE MODE ---------- */
       case 1:
         const isLimitReached =
-          (courseMode === "Solo" && soloCoursesCount >= 5) ||
+          (courseMode === "Solo" && soloCoursesCount >= 3) ||
           (courseMode === "Collaborative" && collaborativeCoursesCount >= 3);
 
         return (
@@ -147,7 +147,7 @@ export default function TopicSelection({ soloCoursesCount = 0, collaborativeCour
 
             {isLimitReached && (
               <div className="p-3 bg-red-100 text-red-800 rounded-md text-sm">
-                You have reached the limit for {courseMode} courses. Please upgrade to Premium or delete existing ones.
+                Upgrade your account or delete past whiteboards to create new ones.
               </div>
             )}
 

@@ -96,9 +96,29 @@ function Canvas({ topic }: { topic: string }) {
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      if (
+        (e.target instanceof HTMLInputElement ||
+          e.target instanceof HTMLTextAreaElement) &&
+        !(
+          e.key === "Backspace" &&
+          (e.target as HTMLTextAreaElement).value === ""
+        )
+      ) {
+        return;
+      }
+
       switch (e.key) {
         case "Backspace": {
-          deleteLayers();
+          if (
+            e.target instanceof HTMLTextAreaElement &&
+            (e.target as HTMLTextAreaElement).value === ""
+          ) {
+            if (window.confirm("Delete this text box?")) {
+              deleteLayers();
+            }
+          } else {
+            deleteLayers();
+          }
           break;
         }
         case "z": {

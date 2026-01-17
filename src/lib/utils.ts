@@ -203,11 +203,12 @@ export function penPointsToPathLayer(
 }
 
 export function pointerEventToCanvasPoint(
-  e: React.PointerEvent,
+  e: React.PointerEvent | React.WheelEvent,
   camera: Camera
 ): Point {
+  const rect = e.currentTarget.getBoundingClientRect();
   return {
-    x: Math.round(e.clientX) - camera.x,
-    y: Math.round(e.clientY) - camera.y,
+    x: Math.round(e.clientX - rect.left) - camera.x,
+    y: Math.round(e.clientY - rect.top) - camera.y,
   };
 }

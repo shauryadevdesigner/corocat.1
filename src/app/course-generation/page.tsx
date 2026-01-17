@@ -63,14 +63,14 @@ function CourseGenerationManager() {
       const soloCount = userCourses.filter(c => c.courseMode === 'Solo').length;
       const collabCount = userCourses.filter(c => c.courseMode === 'Collaborative').length;
 
-      if (courseMode === 'Solo' && soloCount >= 5) {
-        setError('You have reached the limit of 5 courses. Please upgrade.');
+      if (courseMode === 'Solo' && soloCount >= 3) {
+        setError('Upgrade your account or delete past whiteboards to create new ones.');
         setStatus('Limit Reached');
         return;
       }
 
       if (courseMode === 'Collaborative' && collabCount >= 3) {
-        setError('You have reached the limit of 3 whiteboards. Please upgrade.');
+        setError('Upgrade your account or delete past whiteboards to create new ones.');
         setStatus('Limit Reached');
         return;
       }

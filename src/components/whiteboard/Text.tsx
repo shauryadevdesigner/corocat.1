@@ -43,11 +43,24 @@ export default function Text({
                     color: fill ? colorToCss(fill) : "#000",
                     fontSize: "24px",
                     fontFamily: "Inter, sans-serif",
-                    lineHeight: 1,
+                    lineHeight: 1.2,
+                    padding: "4px",
                     border: selectionColor ? `1px solid ${selectionColor}` : "none",
                 }}
                 value={value || ""}
                 onChange={(e) => updateValue(e.target.value)}
+                onPointerDown={(e) => {
+                    // Stop propagation if selected to allow cursor placement
+                    if (selectionColor) {
+                        e.stopPropagation();
+                    }
+                }}
+                onKeyDown={(e) => {
+                    // Stop character deletion from being handled globally
+                    if (e.key === "Backspace" && value !== "") {
+                        e.stopPropagation();
+                    }
+                }}
                 placeholder="Type..."
             />
         </foreignObject>
