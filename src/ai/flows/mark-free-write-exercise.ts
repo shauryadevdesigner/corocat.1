@@ -7,8 +7,8 @@
  * - MarkFreeWriteExerciseOutput - The return type for the function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
 const MarkFreeWriteExerciseInputSchema = z.object({
@@ -30,8 +30,8 @@ export async function markFreeWriteExercise(input: MarkFreeWriteExerciseInput): 
 
 const prompt = ai.definePrompt({
   name: 'markFreeWriteExercisePrompt',
-  input: {schema: MarkFreeWriteExerciseInputSchema},
-  output: {schema: MarkFreeWriteExerciseOutputSchema},
+  input: { schema: MarkFreeWriteExerciseInputSchema },
+  output: { schema: MarkFreeWriteExerciseOutputSchema },
   prompt: `You are an encouraging and helpful AI teaching assistant. Your task is to evaluate a user's short free-write answer based on the lesson they just learned.
 
     Here is the context:
@@ -51,11 +51,11 @@ const markFreeWriteExerciseFlow = ai.defineFlow(
     name: 'markFreeWriteExerciseFlow',
     inputSchema: MarkFreeWriteExerciseInputSchema,
     outputSchema: MarkFreeWriteExerciseOutputSchema,
-    
+
   },
   async input => {
     // Use a faster, smaller model for this evaluation task.
-    const {output} = await prompt(input, { model: googleAI.model('gemini-2.5-flash') });
+    const { output } = await prompt(input, { model: googleAI.model('gemini-1.5-flash') });
     return output!;
   }
 );

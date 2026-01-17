@@ -9,7 +9,7 @@ import type { CourseData, Step, User } from '@/lib/types';
 import { ai } from '@/ai/genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
-const model = googleAI.model('gemini-2.5-flash');
+const model = googleAI.model('gemini-1.5-flash');
 
 // Action to validate the course topic
 export async function validateTopicAction({ topic }: { topic: string }) {

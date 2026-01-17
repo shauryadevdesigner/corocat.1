@@ -25,13 +25,14 @@ import {
   validateTopicPrompt,
   ValidateTopicOutputSchema
 } from './validate-topic';
-import { GenerateFullCourseOutput, GenerateFullCourseOutputSchema } from './schemas';
+import type { GenerateFullCourseOutput } from './schemas';
+import { GenerateFullCourseOutputSchema } from './schemas';
 import { GenerateCourseOutlineInput } from './generate-course-outline';
 export type { GenerateFullCourseOutput };
 export type GenerateFullCourseInput = GenerateCourseOutlineInput;
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-const model = googleAI.model('gemini-2.5-flash');
+const model = googleAI.model('gemini-1.5-flash');
 
 // Flow to validate the user's topic
 const validateTopicFlow = ai.defineFlow(

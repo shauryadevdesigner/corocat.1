@@ -8,8 +8,8 @@
  * - GenerateStepQuizOutput - The return type for the function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
 const GenerateStepQuizInputSchema = z.object({
@@ -22,17 +22,17 @@ export type GenerateStepQuizInput = z.infer<typeof GenerateStepQuizInputSchema>;
 
 
 const MultipleChoiceQuizSchema = z.object({
-    type: z.enum(['multipleChoice']).describe("The type of quiz question."),
-    question: z.string().describe('The quiz question.'),
-    options: z.array(z.string()).describe('An array of possible answers. For true/false questions, this should be ["True", "False"].'),
-    correctAnswerIndex: z.number().describe('The index of the correct answer in the options array.'),
-    explanation: z.string().describe('A brief explanation of why the answer is correct.'),
+  type: z.enum(['multipleChoice']).describe("The type of quiz question."),
+  question: z.string().describe('The quiz question.'),
+  options: z.array(z.string()).describe('An array of possible answers. For true/false questions, this should be ["True", "False"].'),
+  correctAnswerIndex: z.number().describe('The index of the correct answer in the options array.'),
+  explanation: z.string().describe('A brief explanation of why the answer is correct.'),
 });
 
 const QuizSchema = MultipleChoiceQuizSchema;
 
 const GenerateStepQuizOutputSchema = z.object({
-    quiz: z.array(QuizSchema).describe('An array of 6 quiz questions to test understanding. Include exactly 4 multiple-choice questions (with 3-4 options each) and 2 true/false questions.'),
+  quiz: z.array(QuizSchema).describe('An array of 6 quiz questions to test understanding. Include exactly 4 multiple-choice questions (with 3-4 options each) and 2 true/false questions.'),
 });
 export type GenerateStepQuizOutput = z.infer<typeof GenerateStepQuizOutputSchema>;
 
@@ -42,8 +42,8 @@ export async function generateStepQuiz(input: GenerateStepQuizInput): Promise<Ge
 
 const prompt = ai.definePrompt({
   name: 'generateStepQuizPrompt',
-  input: {schema: GenerateStepQuizInputSchema},
-  output: {schema: GenerateStepQuizOutputSchema},
+  input: { schema: GenerateStepQuizInputSchema },
+  output: { schema: GenerateStepQuizOutputSchema },
   prompt: `You are an AI assistant who creates quizzes. Your task is to create a quiz for a single step in an online course.
 
     Here is the context for the course and the step:
@@ -73,9 +73,9 @@ const generateStepQuizFlow = ai.defineFlow(
     outputSchema: GenerateStepQuizOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input, { model: googleAI.model('gemini-2.5-flash') });
+    const { output } = await prompt(input, { model: googleAI.model('gemini-1.5-flash') });
     if (!output || !output.quiz || output.quiz.length < 6) {
-        throw new Error('AI failed to generate a complete quiz for this step.');
+      throw new Error('AI failed to generate a complete quiz for this step.');
     }
     return output;
   }

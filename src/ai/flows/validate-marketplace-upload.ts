@@ -1,8 +1,8 @@
 
 'use server';
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 import { marketplaceCategories } from '@/lib/marketplace-categories';
 
@@ -27,8 +27,8 @@ export async function validateMarketplaceUpload(input: ValidateMarketplaceUpload
 
 const prompt = ai.definePrompt({
   name: 'validateMarketplaceUploadPrompt',
-  input: {schema: ValidateMarketplaceUploadInputSchema},
-  output: {schema: ValidateMarketplaceUploadOutputSchema},
+  input: { schema: ValidateMarketplaceUploadInputSchema },
+  output: { schema: ValidateMarketplaceUploadOutputSchema },
   prompt: `You are an expert content curator for an online learning marketplace. Your job is to determine the best category for a user-submitted course.
 
   Here are the available categories: ${availableCategories}
@@ -58,7 +58,7 @@ const validateMarketplaceUploadFlow = ai.defineFlow(
     outputSchema: ValidateMarketplaceUploadOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input, { model: googleAI.model('gemini-2.5-flash') });
+    const { output } = await prompt(input, { model: googleAI.model('gemini-1.5-flash') });
     return output!;
   }
 );

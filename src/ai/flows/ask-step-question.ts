@@ -8,8 +8,8 @@
  * - AskStepQuestionOutput - The return type for the askStepQuestion function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
 const AskStepQuestionInputSchema = z.object({
@@ -36,8 +36,8 @@ export async function askStepQuestion(input: AskStepQuestionInput): Promise<AskS
 
 const prompt = ai.definePrompt({
   name: 'askStepQuestionPrompt',
-  input: {schema: AskStepQuestionInputSchema},
-  output: {schema: AskStepQuestionOutputSchema},
+  input: { schema: AskStepQuestionInputSchema },
+  output: { schema: AskStepQuestionOutputSchema },
   prompt: `You are an AI assistant for a learning platform. Your role is to answer user questions about the course content. You have access to the entire course outline, the content of the current step, and the conversation history.
 
   Here is the full course context:
@@ -75,7 +75,7 @@ const askStepQuestionFlow = ai.defineFlow(
     outputSchema: AskStepQuestionOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input, { model: googleAI.model('gemini-2.5-flash') });
+    const { output } = await prompt(input, { model: googleAI.model('gemini-1.5-flash') });
     return output!;
   }
 );

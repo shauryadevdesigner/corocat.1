@@ -8,8 +8,8 @@
  * - EvaluateFreeWriteOutput - The return type for the function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
 
 const EvaluateFreeWriteInputSchema = z.object({
@@ -32,8 +32,8 @@ export async function evaluateFreeWrite(input: EvaluateFreeWriteInput): Promise<
 
 const prompt = ai.definePrompt({
   name: 'evaluateFreeWritePrompt',
-  input: {schema: EvaluateFreeWriteInputSchema},
-  output: {schema: EvaluateFreeWriteOutputSchema},
+  input: { schema: EvaluateFreeWriteInputSchema },
+  output: { schema: EvaluateFreeWriteOutputSchema },
   prompt: `You are an AI teaching assistant. Your job is to evaluate a user's free-write answer based on the lesson they just learned. Be fair but thorough.
 
     **Lesson Content:**
@@ -64,7 +64,7 @@ const evaluateFreeWriteFlow = ai.defineFlow(
   },
   async input => {
     // Use a fast and efficient model for this evaluation task.
-    const {output} = await prompt(input, { model: googleAI.model('gemini-2.5-flash') });
+    const { output } = await prompt(input, { model: googleAI.model('gemini-1.5-flash') });
     return output!;
   }
 );
