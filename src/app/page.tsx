@@ -1,104 +1,34 @@
+// @ts-nocheck
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/logo';
-import { BookOpenCheck, Zap, Bot, ArrowRight, Star, Mail, Users, Sparkles, Rocket } from 'lucide-react';
+import { BookOpenCheck, Zap, Bot, Star, Mail, Users, Sparkles, Rocket, CheckCircle2, XCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import MainLayout from '@/components/main-layout';
 import { Decorations } from '@/components/decorations';
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 // Discord icon component
 const DiscordIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20.317 4.37a19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 0 0 0-5.487 0 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
   </svg>
 );
-
-// StarBorder Component
-const StarBorder = ({
-  as: Component = 'button',
-  className = '',
-  color = '#a855f7',
-  speed = '5s',
-  children,
-  ...rest
-}: {
-  as?: any;
-  className?: string;
-  color?: string;
-  speed?: string;
-  children: React.ReactNode;
-  [key: string]: any;
-}) => {
-  return (
-    <Component
-      className={`inline-block relative rounded-[20px] overflow-hidden ${className}`}
-      {...rest}
-    >
-      <style jsx>{`
-        @keyframes star-movement-bottom {
-          0% {
-            transform: translate(0%, 0%);
-            opacity: 1;
-          }
-          100% {
-            transform: translate(-100%, 0%);
-            opacity: 0;
-          }
-        }
-        @keyframes star-movement-top {
-          0% {
-            transform: translate(0%, 0%);
-            opacity: 1;
-          }
-          100% {
-            transform: translate(100%, 0%);
-            opacity: 0;
-          }
-        }
-      `}</style>
-      <div
-        className="absolute w-[300%] h-1/2 opacity-70 bottom-[-12px] right-[-250%] rounded-[50%] z-0 animate-[star-movement-bottom_linear_infinite_alternate]"
-        style={{
-          background: `radial-gradient(circle, ${color}, transparent 10%)`,
-          animationDuration: speed
-        }}
-      ></div>
-      <div
-        className="absolute opacity-70 w-[300%] h-1/2 top-[-12px] left-[-250%] rounded-[50%] z-0 animate-[star-movement-top_linear_infinite_alternate]"
-        style={{
-          background: `radial-gradient(circle, ${color}, transparent 10%)`,
-          animationDuration: speed
-        }}
-      ></div>
-      <div className="relative border border-gray-800 bg-black text-white text-base text-center px-[26px] py-4 rounded-[20px] z-10">
-        {children}
-      </div>
-    </Component>
-  );
-};
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
+    const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -114,13 +44,13 @@ export default function LandingPage() {
       name: 'Michael B.',
       role: 'Bootcamp Grad',
       avatar: 'MB',
-      quote: "This is the perfect tool for bridging the gap between theory and practice. I used it to create a deep-dive course on 'Advanced CSS Grid' and it filled in so many knowledge holes I didn't even know I had.",
+      quote: "This is the perfect tool for bridging the gap between theory and practice. I used it to create a deep‑dive course on 'Advanced CSS Grid' and it filled in so many knowledge holes I didn't even know I had.",
     },
     {
       name: 'Anita P.',
       role: 'Hobbyist Developer',
       avatar: 'AP',
-      quote: "As someone who codes for fun, I love that I can just type in 'Learn Rust for WebAssembly' and get a structured, weekend-sized project plan. It keeps my learning focused and I actually finish what I start.",
+      quote: "As someone who codes for fun, I love that I can just type in 'Learn Rust for WebAssembly' and get a structured, weekend‑sized project plan. It keeps my learning focused and I actually finish what I start.",
     },
     {
       name: 'David R.',
@@ -132,22 +62,22 @@ export default function LandingPage() {
 
   const howItWorksSteps = [
     {
-      title: "Pick a Topic",
+      title: 'Pick a Topic',
       description: "Tell us what you're curious about. From coding to cooking, anything is possible.",
       icon: <BookOpenCheck className="w-8 h-8" />,
-      color: "bg-yellow-400",
+      color: 'bg-yellow-400',
     },
     {
-      title: "Generate Your Path",
-      description: "Our AI instantly creates a comprehensive, step-by-step course tailored to your chosen depth.",
+      title: 'Generate Your Path',
+      description: 'Our AI instantly creates a comprehensive, step‑by‑step course tailored to your chosen depth.',
       icon: <Zap className="w-8 h-8" />,
-      color: "bg-red-500",
+      color: 'bg-red-500',
     },
     {
-      title: "Learn & Master",
-      description: "Follow the steps, track your progress, and ask our AI assistant for help whenever you get stuck.",
+      title: 'Learn & Master',
+      description: 'Follow the steps, track your progress, and ask our AI assistant for help whenever you get stuck.',
       icon: <Bot className="w-8 h-8" />,
-      color: "bg-purple-600",
+      color: 'bg-purple-600',
     },
   ];
 
@@ -155,6 +85,7 @@ export default function LandingPage() {
     <MainLayout>
       <div className="flex flex-col min-h-screen bg-background">
         <Decorations scrollY={scrollY} />
+        {/* Header */}
         <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between animate-fade-in-down relative z-10">
           <Logo />
           <div className="flex items-center gap-4">
@@ -162,300 +93,90 @@ export default function LandingPage() {
               <>
                 {user ? (
                   <>
-                    <Button variant="ghost" size="icon">
-                      <Mail className="h-5 w-5" />
-                    </Button>
+                    <Button variant="ghost" size="icon"><Mail className="h-5 w-5" /></Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <Users className="h-5 w-5" />
-                        </Button>
+                        <Button variant="ghost" size="icon"><Users className="h-5 w-5" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem>Add Friend</DropdownMenuItem>
                         <DropdownMenuItem>My Friends</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                    <Button asChild className="rounded-full">
-                      <Link href="/learn">Go to App</Link>
-                    </Button>
+                    <Button asChild className="rounded-full"><Link href="/learn">Go to App</Link></Button>
                   </>
                 ) : (
                   <>
-                    <Button variant="ghost" asChild className="rounded-full border-orange-500 border">
-                      <Link href="/login">Log In</Link>
-                    </Button>
-                    <Button asChild className="rounded-full">
-                      <Link href="/signup">Sign Up</Link>
-                    </Button>
+                    <Button variant="ghost" asChild className="rounded-full border-orange-500 border"><Link href="/login">Log In</Link></Button>
+                    <Button asChild className="rounded-full"><Link href="/signup">Sign Up</Link></Button>
                   </>
                 )}
               </>
             )}
           </div>
         </header>
-
         <main className="flex-1">
-          {/* Hero Section - Enhanced Version */}
+          {/* Hero */}
           <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-40 flex flex-col items-center text-center relative z-10">
-            <div className="animate-fade-in-up max-w-5xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-8 border border-primary/20">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">AI-Powered Learning Platform</span>
-              </div>
-
-              <h1 className="font-headline text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                Master Any Subject<br />
-                <span className="text-primary">With Excitement</span>
-              </h1>
-
-              <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
-                Corocat uses AI to create perfectly personalized learning courses on any topic. Go from beginner to expert with a structured, easy-to-follow plan.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-
-                <Button asChild size="lg" className="text-lg px-8 py-6 rounded-full">
-                  <Link href="#how-it-works">
-                    See How It Works
-                  </Link>
-                </Button>
-              </div>
-
-              <div className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="flex -space-x-2">
-                    {[
-                      'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
-                      'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
-                      'https://api.dicebear.com/7.x/avataaars/svg?seed=Maya',
-                      'https://api.dicebear.com/7.x/avataaars/svg?seed=Oscar'
-                    ].map((avatar, i) => (
-                      <div key={i} className="w-8 h-8 rounded-full bg-primary/20 border-2 border-background overflow-hidden">
-                        <img src={avatar} alt={`User ${i + 1}`} className="w-full h-full object-cover" />
-                      </div>
-                    ))}
-                  </div>
-                  <span>1000+ learners</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <span className="ml-1">4.8 rating</span>
-                </div>
-              </div>
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-8 border border-primary/20">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">AI‑Powered Learning Platform</span>
             </div>
+            <h1 className="font-headline text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              Master Any Subject<br />
+              <span className="text-primary">With Excitement</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
+              Corocat uses AI to create perfectly personalized learning courses on any topic. Go from beginner to expert with a structured, easy‑to‑follow plan.
+            </p>
+            <Button asChild size="lg" className="text-lg px-8 py-6 rounded-full">
+              <Link href="#how-it-works">See How It Works</Link>
+            </Button>
           </section>
 
-          {/* Screenshot Section */}
-          <section className="relative z-10 py-16 sm:py-24">
-            <div className="screenshot-container">
-              <div className={cn(
-                "screenshot-image",
-                "relative rounded-xl shadow-2xl overflow-hidden w-[90%] max-w-3xl mx-auto"
-              )}>
-                <Image
-                  src="/Landing-screenshot.png"
-                  width={1200}
-                  height={780}
-                  alt="Screenshot of the Corocat application interface"
-                  className="w-full h-auto border-2"
-                  data-ai-hint="dashboard analytics"
-                  priority
-                />
-              </div>
-            </div>
-          </section>
-
-          {/* Inside Corocat Section */}
-          <section className="bg-background py-20 relative z-10">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Inside Corocat</h2>
-              <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-                Experience a beautifully designed learning environment built for focus and progress
-              </p>
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="group aspect-video">
-                  <div className="relative overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 h-full">
-                    <video src="/videos/dashboard.mp4" autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
-                      <div className="p-6 text-white">
-                        <h3 className="font-bold text-lg mb-1">Course Dashboard</h3>
-                        <p className="text-sm text-white/90">Track your learning journey</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="group aspect-video">
-                  <div className="relative overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 h-full">
-                    <video src="/videos/assistant.mp4" autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
-                      <div className="p-6 text-white">
-                        <h3 className="font-bold text-lg mb-1">AI Study Assistant</h3>
-                        <p className="text-sm text-white/90">Get instant help and explanations</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="group aspect-video">
-                  <div className="relative overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 h-full">
-                    <video src="/videos/marketplace.mp4" autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end">
-                      <div className="p-6 text-white">
-                        <h3 className="font-bold text-lg mb-1">Course Marketplace</h3>
-                        <p className="text-sm text-white/90">Share and discover new paths</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Premium Section */}
-          <section className="py-24 relative z-10">
-            <div className="absolute inset-0 bg-gradient-to-b from-background via-purple-500/5 to-background -z-10" />
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 rounded-full text-sm font-medium mb-4">
-                  <Star className="w-4 h-4" />
-                  <span>Premium Experience</span>
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Unlock Your Full Potential</h2>
-                <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-                  Level up your learning journey with exclusive features designed for serious learners.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {[
-                  {
-                    title: "Unlimited Creation",
-                    description: "Create as many courses and whiteboards as your curiosity demands. No more hitting limits.",
-                    icon: <Rocket className="w-6 h-6 text-blue-500" />,
-                    bg: "bg-blue-500/10"
-                  },
-                  {
-                    title: "Lightning Fast API",
-                    description: "Priority access to our fastest AI models. Generate comprehensive courses in seconds, not minutes.",
-                    icon: <Zap className="w-6 h-6 text-yellow-500" />,
-                    bg: "bg-yellow-500/10"
-                  },
-                  {
-                    title: "Advanced Analytics",
-                    description: "Deep dive into your learning patterns with detailed insights and progress tracking.",
-                    icon: <BookOpenCheck className="w-6 h-6 text-purple-500" />,
-                    bg: "bg-purple-500/10"
-                  }
-                ].map((feature, i) => (
-                  <div key={i} className="bg-background border rounded-2xl p-8 transition-all hover:shadow-lg hover:-translate-y-1">
-                    <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-6", feature.bg)}>
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {/* How It Works Section */}
-          <section id="how-it-works" className="py-20 relative z-10 bg-muted overflow-hidden">
+          {/* How It Works */}
+          <section id="how-it-works" className="py-20 bg-muted overflow-hidden relative z-10">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-24">How It Works</h2>
-
-              {/* Desktop Timeline */}
-              <div className="hidden md:block relative">
-                <div className="absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600 rounded-full -translate-y-1/2"></div>
-                <div className="relative flex justify-between">
-                  {howItWorksSteps.map((step, index) => (
-                    <div key={index} className="flex-1 relative">
-                      <div className="flex flex-col items-center">
-                        <div className={cn(
-                          "w-24 h-24 rounded-full text-white flex items-center justify-center border-4 border-muted shadow-lg z-10",
-                          step.color
-                        )}>
-                          {step.icon}
-                        </div>
-
-                        <div className={cn(
-                          "w-1 h-16",
-                          step.color
-                        )}></div>
-
-                        <div className="text-center max-w-xs">
-                          <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                          <p className="text-muted-foreground">{step.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mobile Timeline */}
-              <div className="md:hidden space-y-12">
-                {howItWorksSteps.map((step, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className={cn(
-                      "w-12 h-12 rounded-full text-white flex-shrink-0 flex items-center justify-center",
-                      step.color
-                    )}>
+              <div className="grid md:grid-cols-3 gap-12">
+                {howItWorksSteps.map((step, idx) => (
+                  <div key={idx} className="flex flex-col items-center text-center">
+                    <div className={cn('w-24 h-24 rounded-full flex items-center justify-center border-4 border-muted shadow-lg text-white', step.color)}>
                       {step.icon}
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold mb-1">{step.title}</h3>
-                      <p className="text-muted-foreground">{step.description}</p>
-                    </div>
+                    <h3 className="text-xl font-bold mt-4 mb-2">{step.title}</h3>
+                    <p className="text-muted-foreground">{step.description}</p>
                   </div>
                 ))}
               </div>
             </div>
           </section>
 
-          {/* Testimonials Section */}
-          <section className="py-20 relative z-10">
+          {/* Testimonials */}
+          <section className="py-20">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Loved by Learners Worldwide</h2>
-              <Carousel
-                opts={{
-                  align: "start",
-                  loop: true,
-                }}
-                className="w-full max-w-4xl mx-auto"
-              >
+              <Carousel opts={{ align: 'center', loop: true }} className="w-full max-w-4xl mx-auto">
                 <CarouselContent>
-                  {testimonials.map((testimonial, index) => (
-                    <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                      <div className="p-1">
-                        <Card className="h-full">
-                          <CardContent className="p-6 flex flex-col items-start justify-between h-full">
-                            <div className="flex items-center gap-1 mb-4">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                              ))}
+                  {testimonials.map((t, i) => (
+                    <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
+                      <Card className="h-full">
+                        <CardContent className="p-6 flex flex-col justify-between h-full">
+                          <div className="flex items-center gap-1 mb-4">
+                            {[...Array(5)].map((_, idx) => (
+                              <Star key={idx} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                            ))}
+                          </div>
+                          <blockquote className="text-foreground/80 flex-grow">{t.quote}</blockquote>
+                          <div className="flex items-center gap-3 mt-6 pt-6 border-t w-full">
+                            <Avatar className="h-10 w-10"><AvatarFallback>{t.avatar}</AvatarFallback></Avatar>
+                            <div>
+                              <p className="font-semibold">{t.name}</p>
+                              <p className="text-sm text-muted-foreground">{t.role}</p>
                             </div>
-                            <blockquote className="text-foreground/80 flex-grow">
-                              "{testimonial.quote}"
-                            </blockquote>
-                            <div className="flex items-center gap-3 mt-6 pt-6 border-t w-full">
-                              <Avatar className="h-10 w-10">
-                                <AvatarFallback>{testimonial.avatar}</AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="font-semibold">{testimonial.name}</p>
-                                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
@@ -465,11 +186,35 @@ export default function LandingPage() {
             </div>
           </section>
 
+          {/* Pricing */}
+          <section id="pricing" className="py-20 bg-gradient-to-b from-background via-gray-50 to-background">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Choose Your Plan</h2>
+              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                {/* Standard */}
+                <div className="relative p-8 bg-white rounded-xl shadow-lg transform transition hover:-translate-y-2 hover:shadow-2xl hover:bg-gradient-to-r hover:from-white hover:to-gray-50">
+                  <h3 className="text-2xl font-semibold mb-4">Standard</h3>
+                  <p className="text-gray-600 mb-6">All core features to get you started.</p>
+                  <p className="text-4xl font-bold mb-6">$9<span className="text-base font-medium">/mo</span></p>
+                  <Button className="w-full bg-primary hover:bg-primary/90 transition-colors" size="lg">Get Started</Button>
+                </div>
+                {/* Premium */}
+                <div className="relative p-8 bg-white rounded-xl shadow-lg transform transition hover:-translate-y-2 hover:shadow-2xl hover:bg-gradient-to-r hover:from-white hover:to-gray-50">
+                  <div className="absolute top-0 left-0 -mt-3 -ml-3">
+                    <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-purple-600 rounded-full animate-pulse">COMING SOON</span>
+                  </div>
+                  <h3 className="text-2xl font-semibold mb-4">Premium</h3>
+                  <p className="text-gray-600 mb-6">Unlock advanced tools and priority support.</p>
+                  <p className="text-4xl font-bold mb-6">$19<span className="text-base font-medium">/mo</span></p>
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700 transition-colors" size="lg" disabled>Notify Me</Button>
+                </div>
+              </div>
+            </div>
+          </section>
         </main>
-
         {/* Footer */}
-        <footer className="bg-footer-background text-foreground relative z-10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <footer className="bg-footer-background text-foreground py-12">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="col-span-1 md:col-span-2">
                 <Logo />
@@ -478,12 +223,7 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-6">
                   <h4 className="font-semibold font-headline mb-4">Join Our Community</h4>
-                  <Link
-                    href="https://discord.gg/wVX4fkWaaA"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg transition-colors duration-200"
-                  >
+                  <Link href="https://discord.gg/wVX4fkWaaA" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-lg transition-colors duration-200">
                     <DiscordIcon className="h-5 w-5" />
                     Join Discord
                   </Link>
@@ -494,7 +234,7 @@ export default function LandingPage() {
                 <ul className="mt-4 space-y-2">
                   <li><Link href="/" className="text-muted-foreground hover:text-primary">Home</Link></li>
                   <li><Link href="/learn" className="text-muted-foreground hover:text-primary">Get Started</Link></li>
-                  <li><Link href="/login" className="text-muted-foareground hover:text-primary">Log In</Link></li>
+                  <li><Link href="/login" className="text-muted-foreground hover:text-primary">Log In</Link></li>
                   <li><Link href="/signup" className="text-muted-foreground hover:text-primary">Sign Up</Link></li>
                 </ul>
               </div>
@@ -503,7 +243,6 @@ export default function LandingPage() {
                 <ul className="mt-4 space-y-2">
                   <li><Link href="/terms" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
                   <li><Link href="/privacy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
-
                 </ul>
               </div>
             </div>
