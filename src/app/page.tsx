@@ -186,27 +186,124 @@ export default function LandingPage() {
             </div>
           </section>
 
-          {/* Pricing */}
-          <section id="pricing" className="py-20 bg-gradient-to-b from-background via-gray-50 to-background">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Choose Your Plan</h2>
-              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {/* Standard */}
-                <div className="relative p-8 bg-white rounded-xl shadow-lg transform transition hover:-translate-y-2 hover:shadow-2xl hover:bg-gradient-to-r hover:from-white hover:to-gray-50">
-                  <h3 className="text-2xl font-semibold mb-4">Standard</h3>
-                  <p className="text-gray-600 mb-6">All core features to get you started.</p>
-                  <p className="text-4xl font-bold mb-6">$9<span className="text-base font-medium">/mo</span></p>
-                  <Button className="w-full bg-primary hover:bg-primary/90 transition-colors" size="lg">Get Started</Button>
-                </div>
-                {/* Premium */}
-                <div className="relative p-8 bg-white rounded-xl shadow-lg transform transition hover:-translate-y-2 hover:shadow-2xl hover:bg-gradient-to-r hover:from-white hover:to-gray-50">
-                  <div className="absolute top-0 left-0 -mt-3 -ml-3">
-                    <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-purple-600 rounded-full animate-pulse">COMING SOON</span>
+          {/* Pricing Section - Image Inspired Redesign */}
+          <section id="pricing" className="py-24 bg-[#0a0a0a] relative overflow-hidden">
+            {/* Background elements for depth */}
+            <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
+
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Pricing Plans</h2>
+                <div className="h-1 w-20 bg-primary mx-auto rounded-full mb-6" />
+                <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+                  Experience the future of personalized learning. Choose the plan that fits your ambition.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto items-center">
+                {/* Standard Plan - Cyan/Blue Gradient */}
+                <div className="group relative flex flex-col bg-[#1a1a1a] rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2">
+                  {/* Top "Tab" Header */}
+                  <div className="relative h-44 bg-gradient-to-br from-cyan-400 to-blue-600 p-8 flex flex-col justify-end">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+                    <h3 className="text-4xl font-black text-white uppercase tracking-tighter mb-2">Standard</h3>
+                    <p className="text-white/80 text-sm font-medium leading-tight">
+                      Perfect for curious individuals starting their learning journey.
+                    </p>
                   </div>
-                  <h3 className="text-2xl font-semibold mb-4">Premium</h3>
-                  <p className="text-gray-600 mb-6">Unlock advanced tools and priority support.</p>
-                  <p className="text-4xl font-bold mb-6">$19<span className="text-base font-medium">/mo</span></p>
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700 transition-colors" size="lg" disabled>Notify Me</Button>
+
+                  {/* Design Notch / Shade */}
+                  <div className="h-4 bg-black/20 w-full" />
+
+                  {/* Card Body */}
+                  <div className="p-8 pb-10 flex flex-col flex-grow">
+                    <ul className="space-y-5 mb-10">
+                      {[
+                        { text: "Unlimited Course Generation", active: true },
+                        { text: "Standard AI Assistant Access", active: true },
+                        { text: "Up to 5 Collaborative Whiteboards", active: true },
+                        { text: "Personalized Learning Paths", active: true },
+                        { text: "Advanced Progress Analytics", active: false },
+                      ].map((feature, i) => (
+                        <li key={i} className={cn("flex items-center gap-3 transition-colors", feature.active ? "text-gray-200" : "text-gray-600")}>
+                          {feature.active ? (
+                            <div className="flex-shrink-0 w-5 h-5 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                              <CheckCircle2 className="w-3 h-3 text-cyan-400" />
+                            </div>
+                          ) : (
+                            <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/5 flex items-center justify-center">
+                              <XCircle className="w-3 h-3 text-gray-700" />
+                            </div>
+                          )}
+                          <span className="text-sm font-medium">{feature.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-auto flex items-center justify-between pt-6 border-t border-white/5">
+                      <div className="flex flex-col">
+                        <span className="text-3xl font-bold text-white">$9</span>
+                        <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">/ month</span>
+                      </div>
+                      <Button className="bg-white text-black hover:bg-cyan-500 hover:text-white px-8 py-6 rounded-xl font-bold uppercase tracking-wider text-sm transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                        Get Started
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Premium Plan - Purple/Magenta Gradient */}
+                <div className="group relative flex flex-col bg-[#1a1a1a] rounded-[2rem] overflow-hidden border border-primary/20 shadow-[0_0_50px_rgba(168,85,247,0.1)] transition-all duration-500 hover:scale-[1.02] hover:-translate-y-2">
+                  {/* COMING SOON BADGE */}
+                  <div className="absolute top-4 left-4 z-20">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/40 backdrop-blur-md rounded-full border border-white/20">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                      <span className="text-[10px] font-bold text-white uppercase tracking-widest">Coming Soon</span>
+                    </div>
+                  </div>
+
+                  {/* Top "Tab" Header */}
+                  <div className="relative h-44 bg-gradient-to-br from-purple-600 to-fuchsia-600 p-8 flex flex-col justify-end">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+                    <h3 className="text-4xl font-black text-white uppercase tracking-tighter mb-2">Premium</h3>
+                    <p className="text-white/80 text-sm font-medium leading-tight">
+                      For serious learners who want the edge with advanced tools.
+                    </p>
+                  </div>
+
+                  {/* Design Notch / Shade */}
+                  <div className="h-4 bg-black/20 w-full" />
+
+                  {/* Card Body */}
+                  <div className="p-8 pb-10 flex flex-col flex-grow">
+                    <ul className="space-y-5 mb-10">
+                      {[
+                        { text: "Everything in Standard", active: true },
+                        { text: "Priority AI Response Time", active: true },
+                        { text: "Unlimited Whiteboards & Collabs", active: true },
+                        { text: "Real-time Voice Tutoring", active: true },
+                        { text: "Full Enterprise API Access", active: true },
+                      ].map((feature, i) => (
+                        <li key={i} className="flex items-center gap-3">
+                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                            <CheckCircle2 className="w-3 h-3 text-primary" />
+                          </div>
+                          <span className="text-gray-200 text-sm font-medium">{feature.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-auto flex items-center justify-between pt-6 border-t border-white/5">
+                      <div className="flex flex-col">
+                        <span className="text-3xl font-bold text-white">$19</span>
+                        <span className="text-gray-500 text-xs font-bold uppercase tracking-widest">/ month</span>
+                      </div>
+                      <Button className="bg-primary text-white hover:bg-primary/90 px-8 py-6 rounded-xl font-bold uppercase tracking-wider text-sm transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.4)]" disabled>
+                        Notify Me
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
