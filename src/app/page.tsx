@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/logo';
-import { BookOpenCheck, Zap, Bot, Star, Mail, Users, Sparkles, Rocket, CheckCircle2, XCircle } from 'lucide-react';
+import { BookOpenCheck, Zap, Bot, Star, Mail, Users, Sparkles, Rocket, CheckCircle2, XCircle, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import MainLayout from '@/components/main-layout';
 import { Decorations } from '@/components/decorations';
@@ -129,9 +129,93 @@ export default function LandingPage() {
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
               Corocat uses AI to create perfectly personalized learning courses on any topic. Go from beginner to expert with a structured, easy‑to‑follow plan.
             </p>
-            <Button asChild size="lg" className="text-lg px-8 py-6 rounded-full">
-              <Link href="#how-it-works">See How It Works</Link>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button asChild size="lg" className="text-lg px-8 py-6 rounded-full group">
+                <Link href="#how-it-works" className="flex items-center gap-2">
+                  See How It Works
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+            </div>
+
+            {/* Restored Social Proof */}
+            <div className="mt-12 flex items-center justify-center gap-8 text-sm text-muted-foreground animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <div className="flex items-center gap-2">
+                <div className="flex -space-x-2">
+                  {[
+                    'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix',
+                    'https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka',
+                    'https://api.dicebear.com/7.x/avataaars/svg?seed=Maya',
+                    'https://api.dicebear.com/7.x/avataaars/svg?seed=Oscar'
+                  ].map((avatar, i) => (
+                    <div key={i} className="w-8 h-8 rounded-full bg-primary/20 border-2 border-background overflow-hidden shadow-sm">
+                      <img src={avatar} alt={`User ${i + 1}`} className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+                <span className="font-medium">1000+ learners</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                ))}
+                <span className="ml-1 font-medium">4.8 rating</span>
+              </div>
+            </div>
+          </section>
+
+          {/* Restored Screenshot Section */}
+          <section className="relative z-10 py-16 sm:py-24 overflow-hidden">
+            <div className="container mx-auto px-4">
+              <div className="relative group mx-auto max-w-5xl">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/30 to-purple-500/30 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
+                <div className="relative rounded-2xl shadow-2xl border-4 border-white/10 overflow-hidden transform perspective-1000 hover:rotate-x-2 transition-transform duration-700">
+                  <Image
+                    src="/Landing-screenshot.png"
+                    width={1200}
+                    height={780}
+                    alt="Corocat Dashboard"
+                    className="w-full h-auto"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Restored Inside Corocat Section */}
+          <section className="bg-background py-24 relative z-10 border-y border-white/5">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">Inside Corocat</h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+                  Experience a beautifully designed learning environment built for focus and progress.
+                </p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-8">
+                {[
+                  { title: "Course Dashboard", desc: "Track your learning journey", video: "/videos/dashboard.mp4" },
+                  { title: "AI Study Assistant", desc: "Get instant help and explanations", video: "/videos/assistant.mp4" },
+                  { title: "Course Marketplace", desc: "Share and discover new paths", video: "/videos/marketplace.mp4" }
+                ].map((feature, i) => (
+                  <div key={i} className="group relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black shadow-xl hover:-translate-y-2 transition-all duration-500">
+                    <video
+                      src={feature.video}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 p-6">
+                      <h3 className="text-xl font-bold text-white mb-1">{feature.title}</h3>
+                      <p className="text-sm text-gray-400 group-hover:text-white transition-colors">{feature.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </section>
 
           {/* How It Works */}
